@@ -1,13 +1,5 @@
 
-
-paper_height = 500
-paper_width = 500
-
-
-
-paper = Raphael(document.querySelector('#app'), paper_width, paper_height)
-
-generateGrid = (num, totalWidth, totalHeight) ->
+generateGrid = (parent, num, totalWidth, totalHeight) ->
     i = 0
     cx = 0
     cy = 0
@@ -18,7 +10,7 @@ generateGrid = (num, totalWidth, totalHeight) ->
         sub_i = 0
         cx = 0
         while num > sub_i
-            row.push paper.rect(
+            row.push parent.rect(
                 cx, cy
                 totalWidth/num,
                 totalHeight/num
@@ -43,3 +35,38 @@ getBBoxes = (grid) ->
             sub.push cell.getBBox()
         result.push sub
     result
+
+applyNumbers = (parent, bboxGrid, kamea) ->
+    result = []
+    i = 0
+    while bboxGrid.length > i
+        sub = []
+        sub_i = 0
+        while bboxGrid.length > sub_i
+            cell = bboxGrid[i][sub_i]
+            num = kamea[i][sub_i]
+            sub.push parent.text(cell.cx, cell.cy, num+'').attr({
+                'fill': 'black'
+                'font-size': 20
+            })
+            sub_i++
+        result.push sub
+        i++
+    result
+
+renderKamea = (parent, int, size) ->
+    if int < 3
+        console.error 'Select Number between 3 to 9'
+    else if int > 9
+        console.error 'Select Number between 3 to 9'
+    else 
+        canvas = Raphael(parent, size, size)
+        grid = generateGrid(parent, int, size, size)
+        bboxes = getBBoxes(grid)
+        numbers = applyNumbers(parent, bboxes, kameas[int])
+        {
+            'canvas': canvas
+            'grid': grid
+            'bboxes': bboxes
+            'numbers': numbers
+        }

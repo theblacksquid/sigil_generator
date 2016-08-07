@@ -1,7 +1,6 @@
 
-grid = generateGrid(3, paper_width, paper_height)
+paper_height = 500
+paper_width = 500
+paper = Raphael(document.querySelector('#app'), paper_width, paper_height)
 
-bboxes = getBBoxes(grid)
-
-console.log grid
-console.log bboxes
+console.log renderKamea(paper, 9, 500)
