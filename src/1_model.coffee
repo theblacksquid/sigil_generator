@@ -1,4 +1,7 @@
 
+flatten = (arr) ->
+    [].concat.apply([], arr)
+
 generateGrid = (parent, num, totalWidth, totalHeight) ->
     i = 0
     cx = 0
@@ -70,3 +73,34 @@ renderKamea = (parent, int, size) ->
             'bboxes': bboxes
             'numbers': numbers
         }
+        
+findNumberCoords = (arrOfTargets, gridOfNumbers) ->
+    targets = []
+    result = []
+    newArr = flatten(gridOfNumbers)
+    for num in arrOfTargets
+        targets.push newArr.filter((x)->
+            if x.attrs.text is num+'' then x
+            )[0]
+    for obj in targets
+        result.push {
+            x: obj.getBBox().cx
+            y: obj.getBBox().cy
+        }
+    result
+
+generatePath = (arrOfCoords) ->
+    subResult = []
+    for coord in arrOfCoords
+        if coord is arrOfCoords[0]
+            subResult.push "M#{coord.x},#{coord.y}"
+        else 
+            subResult.push "L#{coord.x},#{coord.y}"
+    subResult.join(" ")
+
+renderPath = (parent, pathString) ->
+    parent.path(pathString).attr({
+        'stroke-width': 3
+        'stroke': 'white'
+    })
+
